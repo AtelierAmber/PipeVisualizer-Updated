@@ -29,21 +29,21 @@ data:extend({
     order = "c[toggles]-p[pv-toggle-mouseover]",
     icons = {
       {
-        icon = "__PipeVisualizer__/graphics/mouseover-dark-x32.png",
+        icon = "__PipeVisualizer-Updated__/graphics/mouseover-dark-x32.png",
         icon_size = 32
       },
       {
-        icon = "__PipeVisualizer__/graphics/mouseover-light-x32.png",
+        icon = "__PipeVisualizer-Updated__/graphics/mouseover-light-x32.png",
         icon_size = 32
       }
     },
     small_icons = {
       {
-        icon = "__PipeVisualizer__/graphics/mouseover-dark-x24.png",
+        icon = "__PipeVisualizer-Updated__/graphics/mouseover-dark-x24.png",
         icon_size = 24
       },
       {
-        icon = "__PipeVisualizer__/graphics/mouseover-light-x24.png",
+        icon = "__PipeVisualizer-Updated__/graphics/mouseover-light-x24.png",
         icon_size = 24,
       }
     },
@@ -57,21 +57,21 @@ data:extend({
     order = "c[toggles]-p[pv-toggle-overlay]",
     icons = {
       {
-        icon = "__PipeVisualizer__/graphics/overlay-dark-x32.png",
+        icon = "__PipeVisualizer-Updated__/graphics/overlay-dark-x32.png",
         icon_size = 32
       },
       {
-        icon = "__PipeVisualizer__/graphics/overlay-light-x32.png",
+        icon = "__PipeVisualizer-Updated__/graphics/overlay-light-x32.png",
         icon_size = 32
       }
     },
     small_icons = {
       {
-        icon = "__PipeVisualizer__/graphics/overlay-dark-x24.png",
+        icon = "__PipeVisualizer-Updated__/graphics/overlay-dark-x24.png",
         icon_size = 24
       },
       {
-        icon = "__PipeVisualizer__/graphics/overlay-light-x24.png",
+        icon = "__PipeVisualizer-Updated__/graphics/overlay-light-x24.png",
         icon_size = 24,
       }
     },
@@ -82,7 +82,7 @@ data:extend({
   {
     type = "sprite",
     name = "pv-entity-box",
-    filename = "__PipeVisualizer__/graphics/entity-box.png",
+    filename = "__PipeVisualizer-Updated__/graphics/entity-box.png",
     size = 64,
     scale = 0.5,
     flags = { "icon" },
@@ -99,7 +99,7 @@ data:extend({
   {
     type = "sprite",
     name = "pv-underground-connection",
-    filename = "__PipeVisualizer__/graphics/underground-connection.png",
+    filename = "__PipeVisualizer-Updated__/graphics/underground-connection.png",
     size = 64,
     scale = 0.5,
     flags = { "icon" },
@@ -108,7 +108,7 @@ data:extend({
   {
     type = "sprite",
     name = "pv-fluid-arrow",
-    filename = "__PipeVisualizer__/graphics/fluid-arrow.png",
+    filename = "__PipeVisualizer-Updated__/graphics/fluid-arrow.png",
     size = 48,
     scale = 0.5,
     flags = { "icon" },
@@ -117,7 +117,7 @@ data:extend({
   {
     type = "sprite",
     name = "pv-fluid-arrow-output",
-    filename = "__PipeVisualizer__/graphics/fluid-arrow-output.png",
+    filename = "__PipeVisualizer-Updated__/graphics/fluid-arrow-output.png",
     size = 48,
     scale = 0.5,
     flags = { "icon" },
@@ -126,7 +126,7 @@ data:extend({
   {
     type = "sprite",
     name = "pv-fluid-arrow-input",
-    filename = "__PipeVisualizer__/graphics/fluid-arrow-input.png",
+    filename = "__PipeVisualizer-Updated__/graphics/fluid-arrow-input.png",
     size = 48,
     scale = 0.5,
     flags = { "icon" },
@@ -135,7 +135,7 @@ data:extend({
   {
     type = "sprite",
     name = "pv-fluid-arrow-input-output",
-    filename = "__PipeVisualizer__/graphics/fluid-arrow-input-output.png",
+    filename = "__PipeVisualizer-Updated__/graphics/fluid-arrow-input-output.png",
     size = 48,
     scale = 0.5,
     flags = { "icon" },
@@ -148,7 +148,7 @@ for i = 0, 15 do
     {
       type = "sprite",
       name = "pv-pipe-connections-" .. i,
-      filename = "__PipeVisualizer__/graphics/pipe-connections.png",
+      filename = "__PipeVisualizer-Updated__/graphics/pipe-connections.png",
       x = i * 64,
       size = 64,
       scale = 0.5,
