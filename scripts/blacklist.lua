@@ -8,7 +8,7 @@ blacklist.add_remote_interface = function()
 				return
 			end
 			for _, entity_name in pairs(entity_names) do
-				global.blacklist[entity_name] = true
+				storage.blacklist[entity_name] = true
 			end
 		end,
 	})
@@ -18,7 +18,7 @@ end
 local function reset(e)
 	-- Blacklist has to be rebuilt on every config change
 	--- @type table<UnitNumber, boolean>
-	global.blacklist = {}
+	storage.blacklist = {}
 end
 
 blacklist.on_init = reset

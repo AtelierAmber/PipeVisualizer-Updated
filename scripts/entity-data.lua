@@ -2,8 +2,8 @@ local renderer = require("scripts.renderer")
 
 --- @class EntityData
 --- @field connections table<FluidSystemID, PipeConnectionExt[]>
---- @field connection_objects table<FluidSystemID, RenderObjectID[]>
---- @field shape RenderObjectID?
+--- @field connection_objects table<FluidSystemID, LuaRenderObject[]>
+--- @field shape LuaRenderObject?
 --- @field entity LuaEntity
 --- @field fluidbox LuaFluidBox
 --- @field unit_number UnitNumber
@@ -64,7 +64,7 @@ function entity_data.create(iterator, entity)
 
   for i = 1, #data.fluidbox do
     --- @cast i uint
-    local id = data.fluidbox.get_fluid_system_id(i)
+    local id = data.fluidbox.get_fluid_segment_id(i)
     if not id then
       goto continue
     end

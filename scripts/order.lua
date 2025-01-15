@@ -2,11 +2,11 @@ local function get_fluid_ordering()
   --- @type table<string, integer>
   local order = {}
   local i = 0
-  for name in pairs(game.fluid_prototypes) do
+  for name in pairs(prototypes.fluid) do
     i = i + 1
     order[name] = i
   end
-  global.fluid_order = order
+  storage.fluid_order = order
 end
 
 local order = {}

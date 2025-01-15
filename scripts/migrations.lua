@@ -4,9 +4,6 @@ local mod_gui = require("__core__.lualib.mod-gui")
 local mouseover = require("scripts.mouseover")
 
 local version_migrations = {
-  ["2.0.0"] = function()
-    global = {}
-  end,
   ["2.0.1"] = function()
     for _, player in pairs(game.players) do
       local window = mod_gui.get_frame_flow(player).pv_window

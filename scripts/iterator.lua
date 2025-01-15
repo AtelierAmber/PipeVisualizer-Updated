@@ -14,7 +14,7 @@ local renderer = require("scripts.renderer")
 --- @field in_queue table<UnitNumber, boolean>
 --- @field next_color_index integer
 --- @field player_index PlayerIndex
---- @field queue Queue<ToIterateData>
+--- @field queue flib.Queue<ToIterateData>
 --- @field systems table<FluidSystemID, FluidSystemData?>
 --- @field to_ignore table<UnitNumber, boolean>
 
@@ -62,15 +62,15 @@ end
 --- @param from_hover boolean?
 --- @return boolean accepted
 local function request(entity, player_index, in_overlay, from_hover)
-  if not global.iterator then
+  if not storage.iterator then
     return false
   end
 
-  if global.blacklist[entity.name] then
+  if storage.blacklist[entity.name] then
     return false
   end
 
-  local self = global.iterator[player_index]
+  local self = storage.iterator[player_index]
   if not self then
     --- @type Iterator
     self = {
@@ -102,11 +102,11 @@ local function request(entity, player_index, in_overlay, from_hover)
   local fluidbox = entity.fluidbox
   local should_iterate = false
   for fluidbox_index = 1, #fluidbox do
-    local fluid_system_id = fluidbox.get_fluid_system_id(fluidbox_index)
-    if not fluid_system_id then
+    local fluid_segment_id = fluidbox.get_fluid_segment_id(fluidbox_index)
+    if not fluid_segment_id then
       goto continue
     end
-    local system = self.systems[fluid_system_id]
+    local system = self.systems[fluid_segment_id]
     if system and not in_overlay then
       goto continue
     end
@@ -114,22 +114,22 @@ local function request(entity, player_index, in_overlay, from_hover)
     if not system then
       local color = { r = 0.4, g = 0.4, b = 0.4 }
       local order = flib_math.max_uint
-      if global.color_by_system[self.player_index] then
+      if storage.color_by_system[self.player_index] then
         self.next_color_index = self.next_color_index + 1
-        local next_color = global.system_colors[self.next_color_index]
+        local next_color = storage.system_colors[self.next_color_index]
         if next_color then
           color = next_color
           order = self.next_color_index
         end
       else
-        local contents = fluidbox.get_fluid_system_contents(fluidbox_index)
+        local contents = fluidbox.get_fluid_segment_contents(fluidbox_index)
         if contents and next(contents) then
-          color = global.fluid_colors[next(contents)]
-          order = global.fluid_order[next(contents)]
+          color = storage.fluid_colors[next(contents)]
+          order = storage.fluid_order[next(contents)]
         end
       end
 
-      self.systems[fluid_system_id] = { color = color, from_hover = from_hover, order = order }
+      self.systems[fluid_segment_id] = { color = color, from_hover = from_hover, order = order }
     end
 
     should_iterate = true
@@ -139,7 +139,7 @@ local function request(entity, player_index, in_overlay, from_hover)
 
   if should_iterate then
     push(self, entity)
-    global.iterator[player_index] = self
+    storage.iterator[player_index] = self
   end
 
   return should_iterate
@@ -171,7 +171,7 @@ local function iterate(iterator, entities_per_tick)
       if iterator.systems[fluid_system_id] then
         for _, connection in pairs(connections) do
           local owner = connection.target_owner
-          if owner and not global.blacklist[owner.name] then
+          if owner and not storage.blacklist[owner.name] then
             local data = entity_data.get(iterator, owner)
             if not data or data.connections[fluid_system_id] and not data.connection_objects[fluid_system_id] then
               local unit_number = owner.unit_number --[[@as UnitNumber]]
@@ -198,17 +198,17 @@ local function clear_system(iterator, fluid_system_id)
     end
   end
   if not next(iterator.systems) then
-    global.iterator[iterator.player_index] = nil
+    storage.iterator[iterator.player_index] = nil
   end
 end
 
 --- @param player_index PlayerIndex
 --- @param entity LuaEntity
 local function clear(player_index, entity)
-  if not global.iterator or not entity.valid then
+  if not storage.iterator or not entity.valid then
     return
   end
-  local self = global.iterator[player_index]
+  local self = storage.iterator[player_index]
   if not self then
     return
   end
@@ -228,28 +228,28 @@ end
 
 --- @param player_index PlayerIndex
 local function clear_all(player_index)
-  if not global.iterator then
+  if not storage.iterator then
     return
   end
-  local it = global.iterator[player_index]
+  local it = storage.iterator[player_index]
   if not it then
     return
   end
   for _, entity_data in pairs(it.entities) do
     renderer.clear(entity_data)
   end
-  global.iterator[player_index] = nil
-  if not next(global.iterator) then
+  storage.iterator[player_index] = nil
+  if not next(storage.iterator) then
     renderer.reset()
   end
 end
 
 --- @param player_index PlayerIndex
 local function clear_hovered(player_index)
-  if not global.iterator then
+  if not storage.iterator then
     return
   end
-  local it = global.iterator[player_index]
+  local it = storage.iterator[player_index]
   if not it then
     return
   end
@@ -259,8 +259,8 @@ local function clear_hovered(player_index)
     end
   end
   if not next(it.systems) then
-    global.iterator[player_index] = nil
-    if not next(global.iterator) then
+    storage.iterator[player_index] = nil
+    if not next(storage.iterator) then
       renderer.reset()
     end
   end
@@ -269,10 +269,10 @@ end
 --- @param player_index PlayerIndex
 --- @return Iterator?
 local function get(player_index)
-  if not global.iterator then
+  if not storage.iterator then
     return
   end
-  return global.iterator[player_index]
+  return storage.iterator[player_index]
 end
 
 --- @param entity LuaEntity
@@ -307,7 +307,7 @@ local function request_or_clear(entity, player_index)
   local fluidbox = entity.fluidbox
   for fluidbox_index = 1, #fluidbox do
     --- @cast fluidbox_index uint
-    local id = fluidbox.get_fluid_system_id(fluidbox_index)
+    local id = fluidbox.get_fluid_segment_id(fluidbox_index)
     if id and it.systems[id] then
       clear_system(it, id)
     end
@@ -315,19 +315,19 @@ local function request_or_clear(entity, player_index)
 end
 
 local function on_tick()
-  if not global.iterator then
+  if not storage.iterator then
     return
   end
   local entities_per_tick =
-    math.ceil(settings.global["pv-entities-per-tick"].value --[[@as int]] / table_size(global.iterator))
-  for _, iterator in pairs(global.iterator) do
+    math.ceil(settings.global["pv-entities-per-tick"].value --[[@as int]] / table_size(storage.iterator))
+  for _, iterator in pairs(storage.iterator) do
     iterate(iterator, entities_per_tick)
   end
 end
 
 --- @param e EventData.CustomInputEvent
 local function on_toggle_hover(e)
-  local iterator = global.iterator[e.player_index]
+  local iterator = storage.iterator[e.player_index]
   if iterator and iterator.in_overlay then
     return
   end
@@ -345,7 +345,7 @@ end
 
 local function reset()
   --- @type table<PlayerIndex, Iterator>
-  global.iterator = {}
+  storage.iterator = {}
 end
 
 --- @class iterator

@@ -14,7 +14,7 @@ local max_overlay_size = 220 + 5
 --- @alias EntityChunkPositionLookup table<int, LuaEntity[]?>
 
 --- @class Overlay
---- @field background RenderObjectID
+--- @field background LuaRenderObject
 --- @field entities_x table<int, LuaEntity[]>
 --- @field entities_y table<int, LuaEntity[]>
 --- @field dimensions DisplayResolution
@@ -138,7 +138,7 @@ local function update_overlay(self)
   if self.last_position and flib_position.eq(position, self.last_position) then
     return
   end
-  if not rendering.is_valid(self.background) then
+  if not self.background.valid then
     self.background = rendering.draw_sprite({
       sprite = "pv-overlay-box",
       tint = {
@@ -150,9 +150,9 @@ local function update_overlay(self)
       players = { self.player },
     })
   end
-  rendering.set_target(self.background, position)
-  rendering.set_x_scale(self.background, self.dimensions.width)
-  rendering.set_y_scale(self.background, self.dimensions.height)
+  self.background.target = position
+  self.background.x_scale = self.dimensions.width
+  self.background.y_scale = self.dimensions.height
 
   local areas = get_areas(self, position)
 
@@ -197,16 +197,16 @@ local function create_overlay(player)
     dimensions = get_dimensions(player),
     player = player,
   }
-  global.overlay[player.index] = self
+  storage.overlay[player.index] = self
   update_overlay(self)
   return self
 end
 
 --- @param self Overlay
 local function destroy_overlay(self)
-  rendering.destroy(self.background)
+  self.background.destroy()
   iterator.clear_all(self.player.index)
-  global.overlay[self.player.index] = nil
+  storage.overlay[self.player.index] = nil
 end
 
 --- @param e EventData.CustomInputEvent|EventData.on_lua_shortcut
@@ -226,18 +226,18 @@ local function on_toggle_overlay(e)
   if cursor_stack and cursor_stack.valid_for_read and (cursor_stack.is_blueprint_book or cursor_stack.is_blueprint) then
     return
   end
-  local self = global.overlay[e.player_index]
+  local self = storage.overlay[e.player_index]
   if self then
     destroy_overlay(self)
   else
     create_overlay(player)
   end
-  player.set_shortcut_toggled("pv-toggle-overlay", global.overlay[e.player_index] ~= nil)
+  player.set_shortcut_toggled("pv-toggle-overlay", storage.overlay[e.player_index] ~= nil)
 end
 
 --- @param e EventData.on_player_changed_position
 local function on_player_changed_position(e)
-  local self = global.overlay[e.player_index]
+  local self = storage.overlay[e.player_index]
   if self then
     update_overlay(self)
   end
@@ -245,10 +245,10 @@ end
 
 --- @param e EventData.on_player_display_resolution_changed
 local function on_player_display_resolution_changed(e)
-  if not global.overlay then
+  if not storage.overlay then
     return
   end
-  local self = global.overlay[e.player_index]
+  local self = storage.overlay[e.player_index]
   if not self then
     return
   end
@@ -258,7 +258,7 @@ end
 
 --- @param e EventData.CustomInputEvent
 local function on_color_by_system_pressed(e)
-  local self = global.overlay[e.player_index]
+  local self = storage.overlay[e.player_index]
   if not self then
     return
   end
@@ -268,7 +268,7 @@ end
 
 local function reset()
   --- @type table<uint, Overlay>
-  global.overlay = {}
+  storage.overlay = {}
   for _, player in pairs(game.players) do
     player.set_shortcut_toggled("pv-toggle-overlay", false)
   end

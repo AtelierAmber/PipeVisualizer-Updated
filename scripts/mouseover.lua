@@ -7,17 +7,17 @@ local function on_toggle_mouseover(e)
     return
   end
 
-  global.mouseover_enabled[e.player_index] = not global.mouseover_enabled[e.player_index]
+  storage.mouseover_enabled[e.player_index] = not storage.mouseover_enabled[e.player_index]
 
   local player = game.get_player(e.player_index)
   if not player then
     return
   end
 
-  player.set_shortcut_toggled("pv-toggle-mouseover", global.mouseover_enabled[e.player_index])
+  player.set_shortcut_toggled("pv-toggle-mouseover", storage.mouseover_enabled[e.player_index])
   if e.input_name then
     local text
-    if global.mouseover_enabled[e.player_index] then
+    if storage.mouseover_enabled[e.player_index] then
       text = { "message.pv-mouseover-enabled" }
     else
       text = { "message.pv-mouseover-disabled" }
@@ -38,7 +38,7 @@ end
 
 --- @param e EventData.on_selected_entity_changed
 local function on_selected_entity_changed(e)
-  if not global.mouseover_enabled[e.player_index] then
+  if not storage.mouseover_enabled[e.player_index] then
     return
   end
 
@@ -69,7 +69,7 @@ local mouseover = {}
 
 function mouseover.on_init()
   --- @type table<PlayerIndex, boolean>
-  global.mouseover_enabled = {}
+  storage.mouseover_enabled = {}
 end
 
 mouseover.events = {

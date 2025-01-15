@@ -2,54 +2,50 @@ data:extend({
   {
     type = "custom-input",
     name = "pv-visualize-selected",
-    key_sequence = "H",
+    key_sequence = "Y",
     action = "lua",
   },
   {
     type = "custom-input",
     name = "pv-toggle-overlay",
-    key_sequence = "SHIFT + H",
+    key_sequence = "SHIFT + Y",
     action = "lua",
   },
   {
     type = "custom-input",
     name = "pv-toggle-mouseover",
-    key_sequence = "ALT + H",
+    key_sequence = "ALT + Y",
     action = "lua",
   },
   {
     type = "custom-input",
     name = "pv-color-by-fluid-system",
-    key_sequence = "CONTROL + H",
+    key_sequence = "CONTROL + Y",
     action = "lua",
   },
   {
     type = "shortcut",
     name = "pv-toggle-mouseover",
     order = "c[toggles]-p[pv-toggle-mouseover]",
-    icon = {
-      filename = "__PipeVisualizer__/graphics/mouseover-dark-x32.png",
-      size = 32,
-      mipmap_count = 2,
-      flags = { "gui-icon" },
+    icons = {
+      {
+        icon = "__PipeVisualizer__/graphics/mouseover-dark-x32.png",
+        icon_size = 32
+      },
+      {
+        icon = "__PipeVisualizer__/graphics/mouseover-light-x32.png",
+        icon_size = 32
+      }
     },
-    disabled_icon = {
-      filename = "__PipeVisualizer__/graphics/mouseover-light-x32.png",
-      size = 32,
-      mipmap_count = 2,
-      flags = { "gui-icon" },
-    },
-    small_icon = {
-      filename = "__PipeVisualizer__/graphics/mouseover-dark-x24.png",
-      size = 24,
-      mipmap_count = 2,
-      flags = { "gui-icon" },
-    },
-    disabled_small_icon = {
-      filename = "__PipeVisualizer__/graphics/mouseover-light-x24.png",
-      size = 24,
-      mipmap_count = 2,
-      flags = { "gui-icon" },
+    small_icons = {
+      {
+        icon = "__PipeVisualizer__/graphics/mouseover-dark-x24.png",
+        icon_size = 24
+      },
+      {
+        icon = "__PipeVisualizer__/graphics/mouseover-light-x24.png",
+        icon_size = 24,
+      }
     },
     associated_control_input = "pv-toggle-mouseover",
     action = "lua",
@@ -59,29 +55,25 @@ data:extend({
     type = "shortcut",
     name = "pv-toggle-overlay",
     order = "c[toggles]-p[pv-toggle-overlay]",
-    icon = {
-      filename = "__PipeVisualizer__/graphics/overlay-dark-x32.png",
-      size = 32,
-      mipmap_count = 2,
-      flags = { "gui-icon" },
+    icons = {
+      {
+        icon = "__PipeVisualizer__/graphics/overlay-dark-x32.png",
+        icon_size = 32
+      },
+      {
+        icon = "__PipeVisualizer__/graphics/overlay-light-x32.png",
+        icon_size = 32
+      }
     },
-    disabled_icon = {
-      filename = "__PipeVisualizer__/graphics/overlay-light-x32.png",
-      size = 32,
-      mipmap_count = 2,
-      flags = { "gui-icon" },
-    },
-    small_icon = {
-      filename = "__PipeVisualizer__/graphics/overlay-dark-x24.png",
-      size = 24,
-      mipmap_count = 2,
-      flags = { "gui-icon" },
-    },
-    disabled_small_icon = {
-      filename = "__PipeVisualizer__/graphics/overlay-light-x24.png",
-      size = 24,
-      mipmap_count = 2,
-      flags = { "gui-icon" },
+    small_icons = {
+      {
+        icon = "__PipeVisualizer__/graphics/overlay-dark-x24.png",
+        icon_size = 24
+      },
+      {
+        icon = "__PipeVisualizer__/graphics/overlay-light-x24.png",
+        icon_size = 24,
+      }
     },
     associated_control_input = "pv-toggle-overlay",
     action = "lua",

@@ -7,43 +7,42 @@ local flib_queue = require("__flib__.queue")
 
 local function reset()
   rendering.clear(script.mod_name)
-  --- @type Queue<RenderObjectID>
-  global.render_objects = flib_queue.new()
+  --- @type flib.Queue<RenderObjectID>
+  storage.render_objects = flib_queue.new()
 end
 
---- @param id RenderObjectID
-local function clear_sprite(id)
-  if not rendering.is_valid(id) then
+--- @param obj LuaRenderObject
+local function clear_sprite(obj)
+  if not obj.valid then
     return
   end
-  rendering.set_visible(id, false)
-  flib_queue.push_back(global.render_objects, id)
+  obj.visible = false
+  flib_queue.push_back(storage.render_objects, obj)
 end
 
 --- @param args LuaRendering.draw_sprite_param
---- @return RenderObjectID
+--- @return LuaRenderObject
 local function draw_sprite(args)
-  --- @type RenderObjectID?
-  local id
+  --- @type LuaRenderObject?
+  local obj
   repeat
-    id = flib_queue.pop_front(global.render_objects)
-  until not id or rendering.is_valid(id) and rendering.get_surface(id).index == args.surface
+    obj = flib_queue.pop_front(storage.render_objects)
+  until not obj or obj.valid and obj.surface.index == args.surface
 
-  if not id then
+  if not obj then
     return rendering.draw_sprite(args)
   end
+  obj.sprite = args.sprite
+  obj.color = args.tint
+  obj.x_scale = args.x_scale or 1
+  obj.y_scale = args.y_scale or 1
+  obj.render_layer = args.render_layer
+  obj.orientation = args.orientation or 0
+  obj.target = args.target
+  obj.players = args.players
+  obj.visible = true
 
-  rendering.set_sprite(id, args.sprite)
-  rendering.set_color(id, args.tint)
-  rendering.set_x_scale(id, args.x_scale or 1)
-  rendering.set_y_scale(id, args.y_scale or 1)
-  rendering.set_render_layer(id, args.render_layer)
-  rendering.set_orientation(id, args.orientation or 0)
-  rendering.set_target(id, args.target)
-  rendering.set_players(id, args.players)
-  rendering.set_visible(id, true)
-
-  return id
+  return obj
 end
 
 local layers = {
@@ -179,9 +178,9 @@ function renderer.draw(it, entity_data)
     ::continue::
   end
   if entity_data.shape then
-    rendering.set_color(entity_data.shape, shape_fluid_system.color)
+    entity_data.shape.color = shape_fluid_system.color
     if encoded_connections > 0 then
-      rendering.set_sprite(entity_data.shape, "pv-pipe-connections-" .. encoded_connections)
+      entity_data.shape.sprite = "pv-pipe-connections-" .. encoded_connections
     end
   end
 end
@@ -191,8 +190,8 @@ function renderer.clear(entity_data)
   clear_sprite(entity_data.shape)
   entity_data.shape = nil
   for _, objects in pairs(entity_data.connection_objects) do
-    for _, id in pairs(objects) do
-      clear_sprite(id)
+    for _, obj in pairs(objects) do
+      clear_sprite(obj)
     end
   end
   entity_data.connection_objects = {}
@@ -205,8 +204,8 @@ end
 function renderer.clear_system(iterator, entity_data, fluid_system_id)
   local objects = entity_data.connection_objects[fluid_system_id]
   if objects then
-    for _, id in pairs(objects) do
-      clear_sprite(id)
+    for _, obj in pairs(objects) do
+      clear_sprite(obj)
     end
     entity_data.connection_objects[fluid_system_id] = nil
   end
@@ -231,7 +230,7 @@ function renderer.update_shape_color(iterator, entity_data)
       shape_fluid_system = fluid_system_data
     end
   end
-  rendering.set_color(entity_data.shape, shape_fluid_system.color)
+  entity_data.shape.color = shape_fluid_system.color
 end
 
 renderer.on_init = reset
