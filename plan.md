@@ -43,6 +43,8 @@ We are unable to style the entity boxes well because LuaRendering cannot scale
 sprites like GUI styles can. Potential solution would be to add this draw mode
 to LuaRendering.
 
+[2.4.X] `TODO` Additional complexity should involve an additional setting or keybind to toggle `passthrough_visualization` to visualize a network through pumps and other entities.
+
 ## Connection arrows
 
 Connection arrows represent the `flow_direction` for a given connection. They
@@ -71,7 +73,7 @@ visualizing.
 
 ## Specific fluid system
 
-Pressing `H` on a fluid-connectable entity will visualize all of the entities
+Pressing `Y` on a fluid-connectable entity will visualize all of the entities
 in that fluid system.
 
 ```
@@ -82,7 +84,7 @@ for neighbour in entity
 
 ## Overlay
 
-Pressing `Shift + H` will visualize all of the entities visible to the player
+Pressing `Shift + Y` will visualize all of the entities visible to the player
 at max zoom level. As the player moves, entities are searched and added to the
 queue to be visualized.
 

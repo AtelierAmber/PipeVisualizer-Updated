@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.0
+Date: 2025-01-14
+  Bugfixes:
+    - Updated to Factorio 2.0 and changed default keybind to "Y" to not conflict with the default "H" being flipping horizontally. Does not modify existing 2.0 pipe visualization.
+    - Developer changed to AmberAtelier (amberatelier on Discord)
+---------------------------------------------------------------------------------------------------
 Version: 2.2.2
 Date: ????
   Bugfixes:
