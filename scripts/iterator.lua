@@ -195,6 +195,10 @@ local function clear_system(iterator, fluid_system_id)
   for _, data in pairs(iterator.entities) do
     if data.connections[fluid_system_id] then
       entity_data.remove_system(iterator, data, fluid_system_id)
+    else 
+      if data.entity then
+        entity_data.remove(iterator, data)
+      end
     end
   end
   if not next(iterator.systems) then
