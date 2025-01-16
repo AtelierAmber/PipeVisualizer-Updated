@@ -72,6 +72,9 @@ local default_fluid_system = { color = default_color, from_hover = false, order 
 
 local renderer = {}
 
+--- @type float
+local direction_divisor = defines.direction.east * 4
+
 --- @param it Iterator
 --- @param entity_data EntityData
 function renderer.draw(it, entity_data)
@@ -134,7 +137,7 @@ function renderer.draw(it, entity_data)
           sprite = sprite,
           tint = fluid_system_data.color,
           render_layer = layers.arrow,
-          orientation = direction / 8,
+          orientation = direction / direction_divisor,
           target = connection.shape_position,
           surface = entity_data.entity.surface_index,
           players = { it.player_index },
@@ -164,7 +167,7 @@ function renderer.draw(it, entity_data)
             sprite = "pv-underground-connection",
             tint = fluid_system_data.color,
             render_layer = layers.underground,
-            orientation = direction / 8,
+            orientation = direction / direction_divisor,
             target = target,
             surface = entity_data.entity.surface_index,
             players = { it.player_index },
