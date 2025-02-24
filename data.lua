@@ -20,7 +20,7 @@ data:extend({
   {
     type = "custom-input",
     name = "pv-color-by-fluid-system",
-    key_sequence = "CONTROL + Y",
+    key_sequence = "CONTROL + SHIFT + Y",
     action = "lua",
   },
   {

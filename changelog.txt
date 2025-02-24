@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.3
+Date: 2025-01-16
+  Bugfixes:
+    - Changed default keybind for "Color By System" to CTRL + SHIFT + Y so it doesn't conflict with the redo function
+---------------------------------------------------------------------------------------------------
 Version: 2.3.2
 Date: 2025-01-16
   Bugfixes:
