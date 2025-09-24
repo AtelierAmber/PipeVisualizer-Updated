@@ -1,8 +1,8 @@
-if not (script.active_mods["FluidMustFlow"]) then
-  return
-end
-
 local compat = {}
+
+if not (script.active_mods["FluidMustFlow"]) then
+  return compat
+end
 
 local function setup() 
   remote.call("PipeVisualizer", "pipelist_add", "storage-tank", "duct")
