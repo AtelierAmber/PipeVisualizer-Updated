@@ -75,10 +75,26 @@ local renderer = {}
 --- @type float
 local direction_divisor = defines.direction.east * 4
 
+local function is_valid_pipe_entity(ent)
+  local pipe_type = pipe_types[ent.type]
+  if pipe_type == true then
+    return pipe_type
+  end
+  if storage.pipelist[ent.type] and type(storage.pipelist[ent.type]) == "table" then
+    return storage.pipelist[ent.type][ent.name]
+  end
+end
+
+local function is_specific_complex_entity(ent)
+  if storage.complexlist[ent.type] and type(storage.complexlist[ent.type]) == "table" then
+    return storage.complexlist[ent.type][ent.name]
+  end
+end
+
 --- @param it Iterator
 --- @param entity_data EntityData
 function renderer.draw(it, entity_data)
-  local is_complex_type = not pipe_types[entity_data.entity.type]
+  local is_complex_type = (not is_valid_pipe_entity(entity_data.entity)) or is_specific_complex_entity(entity_data.entity) --pipe_types[entity_data.entity.type]
   if is_complex_type then
     local box = flib_bounding_box.resize(entity_data.entity.selection_box, -0.1)
     entity_data.shape = draw_sprite({
@@ -130,7 +146,7 @@ function renderer.draw(it, entity_data)
           direction = (direction + 4) % 8 -- Opposite
         end
         local sprite = "pv-fluid-arrow-" .. connection.flow_direction
-        if connection.flow_direction ~= "input-output" and not pipe_types[connection.target_owner.type] then
+        if connection.flow_direction ~= "input-output" and ((not is_valid_pipe_entity(connection.target_owner)) or is_complex_entity(connection.target_owner)) then --pipe_types[connection.target_owner.type] then
           sprite = "pv-fluid-arrow"
         end
         objects[#objects + 1] = draw_sprite({
