@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.4.0
+Date: 2025-09-23
+  Features:
+    - Added an option in the player options to enable colored pumps (and buildings with singular fluidboxes) when using the Shift+Y overlay feature.
+    - Added compatibility for Fluids Must Flow. Future compatibility can be added easily for oother mods that don't show as expected. 
+      - Submit a request on the mod portal with information or a PR/Issue on github for compatibility additions
+  Bugfixes:
+    - Fixed boxes not showing for pumps and other complex fluid boxes
+---------------------------------------------------------------------------------------------------
 Version: 2.3.3
 Date: 2025-01-16
   Bugfixes:
