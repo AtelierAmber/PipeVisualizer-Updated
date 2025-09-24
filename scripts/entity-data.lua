@@ -97,7 +97,7 @@ end
 
 --- @param iterator Iterator
 --- @param data EntityData
---- @param fluid_system_id FluidSystemID
+--- @param fluid_system_id FluidSystemID | "none"
 function entity_data.remove_system(iterator, data, fluid_system_id)
   if renderer.clear_system(iterator, data, fluid_system_id) then
     iterator.entities[data.unit_number] = nil

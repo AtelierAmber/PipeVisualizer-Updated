@@ -102,12 +102,9 @@ local function request(entity, player_index, in_overlay, from_hover)
   local fluidbox = entity.fluidbox
   local should_iterate = false
   for fluidbox_index = 1, #fluidbox do
-    local fluid_segment_id = fluidbox.get_fluid_segment_id(fluidbox_index)
-    if not fluid_segment_id then
-      goto continue
-    end
+    local fluid_segment_id = fluidbox.get_fluid_segment_id(fluidbox_index) or "none"
     local system = self.systems[fluid_segment_id]
-    if system and not in_overlay then
+    if (not fluid_segment_id == "none") and system and not in_overlay then
       goto continue
     end
 
@@ -122,10 +119,18 @@ local function request(entity, player_index, in_overlay, from_hover)
           order = self.next_color_index
         end
       else
-        local contents = fluidbox.get_fluid_segment_contents(fluidbox_index)
-        if contents and next(contents) then
-          color = storage.fluid_colors[next(contents)]
-          order = storage.fluid_order[next(contents)]
+        if (not fluid_segment_id == "none") then
+          local contents = fluidbox.get_fluid_segment_contents(fluidbox_index)
+          if contents and next(contents) then
+            color = storage.fluid_colors[next(contents)]
+            order = storage.fluid_order[next(contents)]
+          end
+        else
+          local contents = fluidbox[fluidbox_index]
+          if contents and contents.name then
+            color = storage.fluid_colors[contents.name]
+            order = storage.fluid_order[contents.name]
+          end
         end
       end
 
@@ -189,7 +194,7 @@ local function iterate(iterator, entities_per_tick)
 end
 
 --- @param iterator Iterator
---- @param fluid_system_id FluidSystemID
+--- @param fluid_system_id FluidSystemID | "none"
 local function clear_system(iterator, fluid_system_id)
   iterator.systems[fluid_system_id] = nil
   for _, data in pairs(iterator.entities) do
@@ -311,7 +316,7 @@ local function request_or_clear(entity, player_index)
   local fluidbox = entity.fluidbox
   for fluidbox_index = 1, #fluidbox do
     --- @cast fluidbox_index uint
-    local id = fluidbox.get_fluid_segment_id(fluidbox_index)
+    local id = fluidbox.get_fluid_segment_id(fluidbox_index) or "none"
     if id and it.systems[id] then
       clear_system(it, id)
     end

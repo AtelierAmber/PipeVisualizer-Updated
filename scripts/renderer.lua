@@ -122,7 +122,9 @@ function renderer.draw(it, entity_data)
   end
   local shape_fluid_system = default_fluid_system
   local encoded_connections = 0
+  local found_connections = false
   for fluid_system_id, connections in pairs(entity_data.connections) do
+    found_connections = true
     local fluid_system_data = it.systems[fluid_system_id]
     if not fluid_system_data then
       goto continue
@@ -146,7 +148,7 @@ function renderer.draw(it, entity_data)
           direction = (direction + 4) % 8 -- Opposite
         end
         local sprite = "pv-fluid-arrow-" .. connection.flow_direction
-        if connection.flow_direction ~= "input-output" and ((not is_valid_pipe_entity(connection.target_owner)) or is_complex_entity(connection.target_owner)) then --pipe_types[connection.target_owner.type] then
+        if connection.flow_direction ~= "input-output" and ((not is_valid_pipe_entity(connection.target_owner)) or is_specific_complex_entity(connection.target_owner)) then --pipe_types[connection.target_owner.type] then
           sprite = "pv-fluid-arrow"
         end
         objects[#objects + 1] = draw_sprite({
@@ -197,6 +199,13 @@ function renderer.draw(it, entity_data)
     ::continue::
   end
   if entity_data.shape then
+    local sett = settings.get_player_settings(it.player_index)
+    if sett["pv-color-pumps"].value and not found_connections then
+      local fluidbox = entity_data.fluidbox
+      if #fluidbox == 1 then
+        shape_fluid_system = it.systems[fluidbox.get_fluid_segment_id(1) or "none"] or default_fluid_system
+      end
+    end
     entity_data.shape.color = shape_fluid_system.color
     if encoded_connections > 0 then
       entity_data.shape.sprite = "pv-pipe-connections-" .. encoded_connections
@@ -218,7 +227,7 @@ end
 
 --- @param iterator Iterator
 --- @param entity_data EntityData
---- @param fluid_system_id FluidSystemID
+--- @param fluid_system_id FluidSystemID | "none"
 --- @return boolean should_remove
 function renderer.clear_system(iterator, entity_data, fluid_system_id)
   local objects = entity_data.connection_objects[fluid_system_id]

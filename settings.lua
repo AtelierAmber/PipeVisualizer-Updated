@@ -14,4 +14,10 @@ data:extend({
     default_value = 30,
     minimum_value = 1,
   },
+  {
+    type = "bool-setting",
+    name = "pv-color-pumps",
+    setting_type = "runtime-per-user",
+    default_value = true,
+  },
 })
