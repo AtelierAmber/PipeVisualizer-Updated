@@ -1,6 +1,8 @@
 
 local restrictions = {}
 
+---@alias UnitType string
+
 restrictions.add_remote_interface = function()
     remote.add_interface("PipeVisualizer", {
         --- @param entity_names string[]
