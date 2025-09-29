@@ -68,6 +68,11 @@ end
 --- @param player LuaPlayer
 --- @return DisplayResolution
 local function get_dimensions(player)
+  local sett = settings.get_player_settings(player.index)
+  -- Multiplying by 2 for ultrawide screens. Can't be bothered to figure out how to do the math. I don't even know how to do the math lol
+  if sett["pv-allow-ultrawide"].value then
+    max_overlay_size = 445
+  end
   local resolution = player.display_resolution
   local divisor = math.max(resolution.width, resolution.height) / max_overlay_size
   resolution.width = flib_math.ceiled(resolution.width / divisor, 64) + 32
