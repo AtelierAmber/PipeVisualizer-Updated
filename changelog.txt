@@ -1,7 +1,9 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.3
-Date: ????
+Date: 2025-09-28
   Changes:
+    - Added setting to enabled ultra-wide support.
+      - This increases the max overlay size and could potentially cause lag or long delays when enabling and disabling the overlay
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.2
 Date: 2025-09-26
