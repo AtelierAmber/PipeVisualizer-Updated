@@ -6,7 +6,7 @@ Date: 2025-11-15
       rendering system used in the mod. But seen with the overlay and pollution off it's easier to see.
     - Added player option to scale up the overlay view range.
       - This was added specifically to increase the utility via map view. Untested with large numbers
-        and so it might cause lag. I haven't seen any noticable lag at 4x however.
+        and so it might cause lag. I haven't yet seen any lag at 8x however.
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.3
 Date: 2025-09-28
