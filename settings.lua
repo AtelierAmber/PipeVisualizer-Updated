@@ -26,4 +26,11 @@ data:extend({
     setting_type = "runtime-per-user",
     default_value = false,
   },
+  {
+    type = "double-setting",
+    name = "pv-overlay-scale",
+    setting_type = "runtime-per-user",
+    default_value = 1.0,
+    minimum_value = 1,
+  },
 })

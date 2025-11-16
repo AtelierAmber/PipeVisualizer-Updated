@@ -8,13 +8,13 @@ local iterator = require("scripts.iterator")
 -- In the source code, 200 is defined as the maximum viewable distance, but in reality it's around 220
 -- Map editor is 3x that, but we will ignore that for now
 -- Add five for a comfortable margin
-local max_overlay_size = 220 + 5
 
 --- @alias UnitNumber uint
 --- @alias EntityChunkPositionLookup table<int, LuaEntity[]?>
 
 --- @class Overlay
 --- @field background LuaRenderObject
+--- @field mapbackground LuaRenderObject
 --- @field entities_x table<int, LuaEntity[]>
 --- @field entities_y table<int, LuaEntity[]>
 --- @field dimensions DisplayResolution
@@ -65,16 +65,18 @@ local function get_areas(self, position)
   return areas
 end
 
+local default_overlay_size = 220 + 5
 --- @param player LuaPlayer
 --- @return DisplayResolution
 local function get_dimensions(player)
   local sett = settings.get_player_settings(player.index)
   -- Multiplying by 2 for ultrawide screens. Can't be bothered to figure out how to do the math. I don't even know how to do the math lol
+  local overlay_size = default_overlay_size * (sett["pv-overlay-scale"].value)
   if sett["pv-allow-ultrawide"].value then
-    max_overlay_size = 445
+    overlay_size = default_overlay_size * 2
   end
   local resolution = player.display_resolution
-  local divisor = math.max(resolution.width, resolution.height) / max_overlay_size
+  local divisor = math.max(resolution.width, resolution.height) / overlay_size
   resolution.width = flib_math.ceiled(resolution.width / divisor, 64) + 32
   resolution.height = flib_math.ceiled(resolution.height / divisor, 64) + 32
   return resolution
@@ -146,9 +148,7 @@ local function update_overlay(self)
   if not self.background.valid then
     self.background = rendering.draw_sprite({
       sprite = "pv-overlay-box",
-      tint = {
-        a = self.player.mod_settings["pv-overlay-opacity"].value --[[@as double]],
-      },
+      tint = { a = self.player.mod_settings["pv-overlay-opacity"].value --[[@as double]], },
       render_layer = "191",
       target = self.player.position,
       surface = self.player.surface,
@@ -158,6 +158,21 @@ local function update_overlay(self)
   self.background.target = position
   self.background.x_scale = self.dimensions.width
   self.background.y_scale = self.dimensions.height
+  
+  if not self.mapbackground or  not self.mapbackground.valid then
+    self.mapbackground = rendering.draw_sprite({
+      sprite = "pv-overlay-box",
+      tint = { a = self.player.mod_settings["pv-overlay-opacity"].value --[[@as double]], },
+      render_layer = "arrow",
+      target = self.player.position,
+      surface = self.player.surface,
+      players = { self.player },
+      render_mode = "chart",
+    })
+  end
+  self.mapbackground.target = position
+  self.mapbackground.x_scale = self.dimensions.width
+  self.mapbackground.y_scale = self.dimensions.height
 
   local areas = get_areas(self, position)
 
@@ -194,9 +209,19 @@ local function create_overlay(player)
     surface = player.surface,
     players = { player },
   })
+  local mapbackground = rendering.draw_sprite({
+    sprite = "pv-overlay-box",
+    tint = { a = opacity },
+    render_layer = "arrow",
+    target = player.position,
+    surface = player.surface,
+    players = { player },
+    render_mode = "chart",
+  })
   --- @type Overlay
   local self = {
     background = background,
+    mapbackground = mapbackground,
     entities_x = {},
     entities_y = {},
     dimensions = get_dimensions(player),
@@ -210,6 +235,7 @@ end
 --- @param self Overlay
 local function destroy_overlay(self)
   self.background.destroy()
+  if self.mapbackground then self.mapbackground.destroy() end
   iterator.clear_all(self.player.index)
   storage.overlay[self.player.index] = nil
 end
