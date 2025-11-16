@@ -4,6 +4,7 @@ local renderer = require("scripts.renderer")
 --- @field connections table<FluidSystemID, PipeConnectionExt[]>
 --- @field connection_objects table<FluidSystemID, LuaRenderObject[]>
 --- @field shape LuaRenderObject?
+--- @field mapshape LuaRenderObject?
 --- @field entity LuaEntity
 --- @field fluidbox LuaFluidBox
 --- @field unit_number UnitNumber

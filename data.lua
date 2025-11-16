@@ -86,7 +86,7 @@ data:extend({
     size = 64,
     scale = 0.5,
     flags = { "icon" },
-    draw_as_glow = true,
+    --draw_as_glow = true,
   },
   {
     type = "sprite",
@@ -94,7 +94,7 @@ data:extend({
     filename = "__flib__/graphics/black.png",
     size = 1,
     scale = 32,
-    draw_as_glow = true,
+    --draw_as_glow = true,
   },
   {
     type = "sprite",
@@ -103,7 +103,7 @@ data:extend({
     size = 64,
     scale = 0.5,
     flags = { "icon" },
-    draw_as_glow = true,
+    --draw_as_glow = true,
   },
   {
     type = "sprite",
@@ -112,7 +112,7 @@ data:extend({
     size = 48,
     scale = 0.5,
     flags = { "icon" },
-    draw_as_glow = true,
+    --draw_as_glow = true,
   },
   {
     type = "sprite",
@@ -121,7 +121,7 @@ data:extend({
     size = 48,
     scale = 0.5,
     flags = { "icon" },
-    draw_as_glow = true,
+    --draw_as_glow = true,
   },
   {
     type = "sprite",
@@ -130,7 +130,7 @@ data:extend({
     size = 48,
     scale = 0.5,
     flags = { "icon" },
-    draw_as_glow = true,
+    --draw_as_glow = true,
   },
   {
     type = "sprite",
@@ -139,7 +139,7 @@ data:extend({
     size = 48,
     scale = 0.5,
     flags = { "icon" },
-    draw_as_glow = true,
+    --draw_as_glow = true,
   },
 })
 
@@ -154,6 +154,21 @@ for i = 0, 15 do
       scale = 0.5,
       flags = { "icon" },
       draw_as_glow = true,
+    },
+  })
+end
+
+for i = 0, 15 do
+  data:extend({
+    {
+      type = "sprite",
+      name = "pv-pipe-connections-" .. i .. "-chart",
+      filename = "__PipeVisualizer-Updated__/graphics/pipe-connections-chart.png",
+      x = i * 64,
+      size = 64,
+      scale = 0.5,
+      flags = { "icon" },
+      --draw_as_glow = true,
     },
   })
 end

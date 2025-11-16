@@ -41,6 +41,7 @@ local function draw_sprite(args)
   obj.target = args.target
   obj.players = args.players
   obj.visible = true
+  obj.render_mode = args.render_mode or "game"
 
   return obj
 end
@@ -107,6 +108,17 @@ function renderer.draw(it, entity_data)
       surface = entity_data.entity.surface_index,
       players = { it.player_index },
     })
+    entity_data.mapshape = draw_sprite({
+      sprite = "pv-entity-box",
+      tint = default_color,
+      x_scale = flib_bounding_box.width(box),
+      y_scale = flib_bounding_box.height(box),
+      render_layer = "arrow",
+      target = flib_bounding_box.center(box),
+      surface = entity_data.entity.surface_index,
+      players = { it.player_index },
+      render_mode = "chart"
+    })
   else
     local box = flib_bounding_box.ceil(entity_data.entity.selection_box)
     entity_data.shape = draw_sprite({
@@ -118,6 +130,17 @@ function renderer.draw(it, entity_data)
       target = entity_data.entity.position,
       surface = entity_data.entity.surface_index,
       players = { it.player_index },
+    })
+    entity_data.mapshape = draw_sprite({
+      sprite = "pv-pipe-connections-0",
+      tint = default_color,
+      x_scale = flib_bounding_box.width(box),
+      y_scale = flib_bounding_box.height(box),
+      render_layer = "arrow",
+      target = entity_data.entity.position,
+      surface = entity_data.entity.surface_index,
+      players = { it.player_index },
+      render_mode = "chart"
     })
   end
   local shape_fluid_system = default_fluid_system
@@ -160,6 +183,18 @@ function renderer.draw(it, entity_data)
           surface = entity_data.entity.surface_index,
           players = { it.player_index },
         })
+        objects[#objects + 1] = draw_sprite({
+          sprite = sprite,
+          tint = fluid_system_data.color,
+          render_layer = "arrow",
+          y_scale = 4,
+          x_scale = 4,
+          orientation = direction / direction_divisor,
+          target = connection.shape_position,
+          surface = entity_data.entity.surface_index,
+          players = { it.player_index },
+          render_mode = "chart",
+        })
       else
         encoded_connections = bit32.bor(encoded_connections, encoded_directions[direction])
       end
@@ -190,6 +225,18 @@ function renderer.draw(it, entity_data)
             surface = entity_data.entity.surface_index,
             players = { it.player_index },
           })
+          objects[#objects + 1] = draw_sprite({
+            sprite = "pv-underground-connection",
+            tint = fluid_system_data.color,
+            render_layer = "arrow",
+            y_scale = 4,
+            x_scale = 4,
+            orientation = direction / direction_divisor,
+            target = target,
+            surface = entity_data.entity.surface_index,
+            players = { it.player_index },
+            render_mode = "chart",
+          })
         end
       end
 
@@ -211,12 +258,27 @@ function renderer.draw(it, entity_data)
       entity_data.shape.sprite = "pv-pipe-connections-" .. encoded_connections
     end
   end
+  if entity_data.mapshape then
+    local sett = settings.get_player_settings(it.player_index)
+    if sett["pv-color-pumps"].value and not found_connections then
+      local fluidbox = entity_data.fluidbox
+      if #fluidbox == 1 then
+        shape_fluid_system = it.systems[fluidbox.get_fluid_segment_id(1) or "none"] or default_fluid_system
+      end
+    end
+    entity_data.mapshape.color = shape_fluid_system.color
+    if encoded_connections > 0 then
+      entity_data.mapshape.sprite = "pv-pipe-connections-" .. encoded_connections .. "-chart"
+    end
+  end
 end
 
 --- @param entity_data EntityData
 function renderer.clear(entity_data)
   clear_sprite(entity_data.shape)
+  clear_sprite(entity_data.mapshape)
   entity_data.shape = nil
+  entity_data.mapshape = nil
   for _, objects in pairs(entity_data.connection_objects) do
     for _, obj in pairs(objects) do
       clear_sprite(obj)
@@ -240,7 +302,9 @@ function renderer.clear_system(iterator, entity_data, fluid_system_id)
   local should_remove = not next(entity_data.connection_objects)
   if should_remove then
     clear_sprite(entity_data.shape)
+    clear_sprite(entity_data.mapshape)
     entity_data.shape = nil
+    entity_data.mapshape = nil
   else
     renderer.update_shape_color(iterator, entity_data)
   end
@@ -259,6 +323,7 @@ function renderer.update_shape_color(iterator, entity_data)
     end
   end
   entity_data.shape.color = shape_fluid_system.color
+  entity_data.mapshape.color = shape_fluid_system.color
 end
 
 renderer.on_init = reset
