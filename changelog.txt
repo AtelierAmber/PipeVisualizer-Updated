@@ -1,7 +1,12 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.4
-Date: ????
+Date: 2025-11-15
   Changes:
+    - Added rendering to the map view! It can be hard to see at times due to the limitations of the 
+      rendering system used in the mod. But seen with the overlay and pollution off it's easier to see.
+    - Added player option to scale up the overlay view range.
+      - This was added specifically to increase the utility via map view. Untested with large numbers
+        and so it might cause lag. I haven't seen any noticable lag at 4x however.
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.3
 Date: 2025-09-28
